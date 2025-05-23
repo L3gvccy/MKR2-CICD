@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Gallery{% endblock %}
+
+{% block content %}
+
+    <h1>Images from the Last Month</h1>
+    {% if images %}
+        <div class="row">        
+        {% for image in images %}
+            <div class="col-4">
+                <div class="card p-4">
+                    <strong class="text-center">{{ image.title }}</strong><br>
+                    <img class="image-fluid w-100" src="{{ image.image.url }}" alt="{{ image.title }}" width="300"><br>
+                    <a href="{% url 'image_detail' image.pk %}" class="btn btn-primary w-100">Переглянути</a>
+                </div>
+            </div>
+        {% endfor %}
+        </div>
+        </ul>
+    {% else %}
+        <p>No recent images found.</p>
+    {% endif %}
+
+{% endblock %}
