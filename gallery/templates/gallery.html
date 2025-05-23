@@ -4,11 +4,11 @@
 
 {% block content %}
 
-    <h1>Images from the Last Month</h1>
+    <h1>Зображення за останній місяць</h1>
     {% if images %}
         <div class="row">        
         {% for image in images %}
-            <div class="col-4">
+            <div class="col-lg-4">
                 <div class="card p-4">
                     <strong class="text-center">{{ image.title }}</strong><br>
                     <img class="image-fluid w-100" src="{{ image.image.url }}" alt="{{ image.title }}" width="300"><br>
@@ -19,7 +19,7 @@
         </div>
         </ul>
     {% else %}
-        <p>No recent images found.</p>
+        <p>Зображень не знайдено.</p>
     {% endif %}
 
 {% endblock %}

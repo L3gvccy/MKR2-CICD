@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Image detail{% endblock %}
+{% block content %}
+
+    <div class="row">
+        <div class="col-lg-6">
+            <img class="image-fluid w-100" src="{{ image.image.url }}" alt="{{ image.title }}" width="300"><br>
+        </div>
+        <div class="col-lg-6">
+            <h1 class="text-center">{{ image.title }}</h1>
+            <p>Категорії:</p>
+            <ul>
+                {% for category in image.categories.all %}
+                    <li>{{ category.name }}</li>
+                {% empty %}
+                    <li>Ця картинка не має категорій</li>
+                {% endfor %}
+            </ul>
+            <p>Створена: {{ image.created_date }}</p>
+            <p>Вікове обмеження: {{ image.age_limit }}</p>
+        </div>
+    </div>
+
+{% endblock %}

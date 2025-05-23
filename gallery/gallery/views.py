@@ -10,4 +10,5 @@ def gallery_view(request):
     return render(request, 'gallery.html', {'images': recent_images})
 
 def image_detail(request, pk):
-    pass
+    image = get_object_or_404(Image, pk=pk)
+    return render(request, 'image_detail.html', {'image': image})
