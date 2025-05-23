@@ -1,0 +1,62 @@
+name: Heroku deploy
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run tests
+        run: |
+          python manage.py test
+        env:
+          DJANGO_SETTINGS_MODULE: project_recipe.settings
+          SECRET_KEY: ${{ secrets.MY_SECRET_KEY }}
+          DEBUG: 'False'
+
+      - name: Login to Heroku
+        env:
+          HEROKU_API_KEY: ${{ secrets.MY_HEROKU_API_KEY }}
+        run: |
+          curl https://cli-assets.heroku.com/install.sh | sh
+          echo $HEROKU_API_KEY | heroku login --api-key
+
+      - name: Add Heroku remote
+        run: |
+          heroku git:remote -a ${{ secrets.MY_HEROKU_APP_NAME }}
+        env:
+          HEROKU_API_KEY: ${{ secrets.MY_HEROKU_API_KEY }}
+
+      - name: Deploy to Heroku
+        run: |
+          git push heroku main
+        env:
+          HEROKU_API_KEY: ${{ secrets.MY_HEROKU_API_KEY }}
+
+      - name: Run migrations
+        run: |
+          heroku run --app ${{ secrets.MY_HEROKU_APP_NAME }} python manage.py migrate
+        env:
+          HEROKU_API_KEY: ${{ secrets.MY_HEROKU_API_KEY }}
+
+      - name: Collect static files
+        run: |
+          heroku run --app ${{ secrets.MY_HEROKU_APP_NAME }} python manage.py collectstatic --noinput
+        env:
+          HEROKU_API_KEY: ${{ secrets.MY_HEROKU_API_KEY }}
